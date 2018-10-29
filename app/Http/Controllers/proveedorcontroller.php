@@ -97,7 +97,7 @@ class proveedorcontroller extends Controller
 			$provee->archivo = $img2;
 			$provee->activo=$request->activo;
 			$provee->save();
-		$proceso = "ALTA DE CLIENTE";	
+		$proceso = "ALTA DE PROVEEDOR";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)

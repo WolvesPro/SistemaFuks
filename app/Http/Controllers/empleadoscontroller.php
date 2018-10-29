@@ -103,7 +103,7 @@ class empleadoscontroller extends Controller
 			$emplea->id_area=$request->id_area;
 			$emplea->archivo = $img2;
 			$emplea->save();
-		$proceso = "ALTA DE CLIENTE";	
+		$proceso = "ALTA DE EMPLEADO";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
@@ -120,8 +120,8 @@ class empleadoscontroller extends Controller
 	public function eliminaem($id_emp)
 	{
 		    empleados::find($id_emp)->delete();
-		    $proceso = "ELIMINAR CLIENTE";
-			$mensaje = "El CLIENTE ha sido eliminado Correctamente";
+		    $proceso = "ELIMINAR EMPLEADO";
+			$mensaje = "El EMPLEADO ha sido eliminado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
@@ -202,7 +202,7 @@ class empleadoscontroller extends Controller
 	public function restauraem($id_emp)
 	{
 		empleados::withTrashed()->where('id_emp',$id_emp)->restore();
-		$proceso = "RESTAURACION DE MAESTRO";	
+		$proceso = "RESTAURACION DE EMPLEADO";	
 	    $mensaje="Registro restaurado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)

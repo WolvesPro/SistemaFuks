@@ -58,7 +58,7 @@ class areascontroller extends Controller
 			$are->id_ma = $request->id_ma;
 		    $are->activo = $request->activo;
 			$are->save();
-		$proceso = "ALTA DE CLIENTE";	
+		$proceso = "ALTA DE AREA";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
@@ -75,8 +75,8 @@ class areascontroller extends Controller
 	public function eliminaar($id_area)
 	{
 		    areas::find($id_area)->delete();
-		    $proceso = "ELIMINAR CLIENTE";
-			$mensaje = "El CLIENTE ha sido borrado Correctamente";
+		    $proceso = "ELIMINAR AREA";
+			$mensaje = "El AREA ha sido borrada Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
@@ -157,7 +157,7 @@ class areascontroller extends Controller
 	public function restauraar($id_area)
 	{
 		areas::withTrashed()->where('id_area',$id_area)->restore();
-		$proceso = "RESTAURACION DE PROVEEDOR";	
+		$proceso = "RESTAURACION DE AREA";	
 	    $mensaje="Registro restaurado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)

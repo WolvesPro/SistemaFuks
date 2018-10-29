@@ -59,7 +59,7 @@ class maquinariascontroller extends Controller
 			$maqui->id_alerta = $request->id_alerta;
 			$maqui->activo = $request->activo;
 			$maqui->save();
-		$proceso = "ALTA DE ALERTA";	
+		$proceso = "ALTA DE MAQUINA";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
@@ -76,8 +76,8 @@ class maquinariascontroller extends Controller
 	public function eliminama($id_ma)
 	{
 		    maquinarias::find($id_ma)->delete();
-		    $proceso = "ELIMINAR CLIENTE";
-			$mensaje = "El CLIENTE ha sido borrado Correctamente";
+		    $proceso = "ELIMINAR MAQUINA";
+			$mensaje = "El registro ha sido borrado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
@@ -158,7 +158,7 @@ class maquinariascontroller extends Controller
 	public function restauram($id_ma)
 	{
 		maquinarias::withTrashed()->where('id_ma',$id_ma)->restore();
-		$proceso = "RESTAURACION DE PROVEEDOR";	
+		$proceso = "RESTAURACION DE MAQUINARIA";	
 	    $mensaje="Registro restaurado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)

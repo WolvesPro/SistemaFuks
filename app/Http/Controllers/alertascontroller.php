@@ -67,7 +67,7 @@ class alertascontroller extends Controller
 	{
 		    alertas::find($id_alerta)->delete();
 		    $proceso = "ELIMINAR ALERTA";
-			$mensaje = "Alerta ha sido borradaCorrectamente";
+			$mensaje = "Alerta ha sido borrada Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
@@ -148,7 +148,7 @@ class alertascontroller extends Controller
 	public function restauraa($id_alerta)
 	{
 		alertas::withTrashed()->where('id_alerta',$id_alerta)->restore();
-		$proceso = "RESTAURACION DE PROVEEDOR";	
+		$proceso = "RESTAURACION DE ALERTA";	
 	    $mensaje="Registro restaurado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)

@@ -190,7 +190,7 @@ class clientescontroller extends Controller
 	public function restaurac($id_cliente)
 	{
 		clientes::withTrashed()->where('id_cliente',$id_cliente)->restore();
-		$proceso = "RESTAURACION DE MAESTRO";	
+		$proceso = "RESTAURACION DE CLIENTE";	
 	    $mensaje="Registro restaurado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)

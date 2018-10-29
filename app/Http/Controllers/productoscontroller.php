@@ -71,7 +71,7 @@ class productoscontroller extends Controller
 			$produc->id_cliente = $request->id_cliente;
 			$produc->activo = $request->activo;
 			$produc->save();
-		$proceso = "ALTA DE CLIENTE";	
+		$proceso = "ALTA DE PRODUCTO";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
@@ -88,8 +88,8 @@ class productoscontroller extends Controller
 	public function eliminaprod($id_prod)
 	{
 		    productos::find($id_prod)->delete();
-		    $proceso = "ELIMINAR CLIENTE";
-			$mensaje = "El CLIENTE ha sido borrado Correctamente";
+		    $proceso = "ELIMINAR PRODUCTO";
+			$mensaje = "El PRODUCTO ha sido borrado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
@@ -170,7 +170,7 @@ class productoscontroller extends Controller
 	public function restauraprod($id_prod)
 	{
 		productos::withTrashed()->where('id_prod',$id_prod)->restore();
-		$proceso = "RESTAURACION DE PROVEEDOR";	
+		$proceso = "RESTAURACION DE PRODUCTO";	
 	    $mensaje="Registro restaurado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)

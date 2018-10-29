@@ -61,7 +61,7 @@ class almacencontroller extends Controller
 			 $alma->id_prod = $request->id_prod;
 			 $alma->id_area = $request->id_area;
 			 $alma->save();
-		$proceso = "ALTA DE CLIENTE";	
+		$proceso = "ALTA DE ALMACEN";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
@@ -78,8 +78,8 @@ class almacencontroller extends Controller
 	public function eliminaal($id_almacen)
 	{
 		    almacenes::find($id_almacen)->delete();
-		    $proceso = "ELIMINAR CLIENTE";
-			$mensaje = "El CLIENTE ha sido borrado Correctamente";
+		    $proceso = "ELIMINAR ALMACEN";
+			$mensaje = "El Almacen ha sido borrado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
@@ -160,7 +160,7 @@ class almacencontroller extends Controller
 	public function restauraal($id_almacen)
 	{
 		almacenes::withTrashed()->where('id_almacen',$id_almacen)->restore();
-		$proceso = "RESTAURACION DE PROVEEDOR";	
+		$proceso = "RESTAURACION DE ALMACEN";	
 	    $mensaje="Registro restaurado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)

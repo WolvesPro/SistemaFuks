@@ -53,7 +53,7 @@ class categoriascontroller extends Controller
 			$cate->nomb_categoria = $request->nomb_categoria;
 			$cate->id_prod = $request->id_prod;
 			$cate->save();
-		$proceso = "ALTA DE CLIENTE";	
+		$proceso = "ALTA DE CATEGORIA";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
@@ -70,8 +70,8 @@ class categoriascontroller extends Controller
 	public function eliminaca($id_categoria)
 	{
 		    categorias::find($id_categoria)->delete();
-		    $proceso = "ELIMINAR CLIENTE";
-			$mensaje = "El CLIENTE ha sido borrado Correctamente";
+		    $proceso = "ELIMINAR CATEGORIA";
+			$mensaje = "La categoria ha sido borrada Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
@@ -152,7 +152,7 @@ class categoriascontroller extends Controller
 	public function restauraca($id_categoria)
 	{
 		categorias::withTrashed()->where('id_categoria',$id_categoria)->restore();
-		$proceso = "RESTAURACION DE PROVEEDOR";	
+		$proceso = "RESTAURACION DE CATEGORIA";	
 	    $mensaje="Registro restaurado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
