@@ -71,79 +71,54 @@ class categoriascontroller extends Controller
 	{
 		    categorias::find($id_categoria)->delete();
 		    $proceso = "ELIMINAR CATEGORIA";
-			$mensaje = "La categoria ha sido borrada Correctamente";
+			$mensaje = "La categoria ha sido borrado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
 	}
-	public function modificam($idm)
+	public function modificacategoria($id_categoria)
 	{
-		$maestro = maestros::where('idm','=',$idm)->get();
+		$categoria = categorias::where('id_categoria','=',$id_categoria)->get();
 		
-		$idc = $maestro[0]->idc;
+		$id_prod = $categoria[0]->id_prod;
 		
-		$carrera=carreras::where('idc','=',$idc)->get();
-		$demascarreras=carreras::where('idc','!=',$idc)->get();
+		$producto=productos::where('id_prod','=',$id_prod)->get();
+		$demasproductos=productos::where('id_prod','!=',$id_prod)->get();
 		
-		$carrera = carreras::where('idc','=',$idc)->get();
-		return view('sistema.guardamaestro')
-								  ->with('maestro',$maestro[0])
-								  ->with('idc',$idc)
-								  ->with('carrera',$carrera[0]->nombre)
-								  ->with('demascarreras',$demascarreras);
+		
+		return view('sistema.guardacategoria')
+								  ->with('categoria',$categoria[0])
+								  ->with('id_prod',$id_prod)
+								  ->with('producto',$producto[0]->nomb_prod)
+								  ->with('demasproductos',$demasproductos);
 	}
 	
 	
 	
-	public function editamaestro(Request $request)
+	public function editacategoria(Request $request)
 	{
-		$nombre = $request->nombre;
-		$idm = $request->idm;
-		$edad= $request->edad;
-		$sexo = $request->sexo;
-		$beca= $request->beca;
-		$cp = $request->cp;
+		$nomb_categoria = $request->nomb_categoria;
+		$id_categoria = $request->id_categoria;
 		///NUNCA SE RECIBEN LOS ARCHIVOS
 		
 		
 		$this->validate($request,[
-		 'nombre'=>'required',['regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/'],
-		 'edad'=>'required|integer|min:18|max:60',
-		 'cp'=>'required',['regex:/^[0-9]{5}$/'],
-		 'beca'=>'required',['regex:/^[0-9]+[.][0-9]{2}$/'],
-		 'archivo'=>'image|mimes:jpg,jpeg,png,gif'
+	     'id_categoria'=>'required|numeric',
+		 'nomb_categoria'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 	     ]);
-		 
-		 
-		 $file = $request->file('archivo');
-	 if($file!="")
-	 {
-	 $ldate = date('Ymd_His_');
-	 $img = $file->getClientOriginalName();
-	 $img2 = $ldate.$img;
-	 \Storage::disk('local')->put($img2, \File::get($file));
-	 }
-	 
+
 		 
 		 
 		 //insert into maestros(idm,nombre,edad,sexo) values('$idm',
 		 //'$nombre')
-		    $maest = maestros::find($idm);
-			$maest->idm = $request->idm;
-			$maest->nombre = $request->nombre;
-			$maest->edad =$request->edad;
-			$maest->sexo= $request->sexo;
-			$maest->cp=$request->cp;
-			$maest->beca=$request->beca;
-			$maest->idc=$request->idc;
-			if($file!='')
-			{
-			$maest->archivo = $img2;
-			}
-			$maest->save();
-		$proceso = "ALTA DE MAESTRO";	
+		    $cate = categorias::find($id_categoria);
+			$cate->id_categoria = $request->id_categoria;
+			$cate->nomb_categoria = $request->nomb_categoria;
+			$cate->id_prod = $request->id_prod;
+			$cate->save();
+		$proceso = "CATEGORIA MODIFICADA";	
 	    $mensaje="Registro modificado correctamente";
-		return view('sistema.mensaje')
+		return view("sistema.mensaje")
 		->with('proceso',$proceso)
 		->with('mensaje',$mensaje);
 		 
