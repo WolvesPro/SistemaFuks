@@ -58,7 +58,7 @@ class proveedorcontroller extends Controller
 		 'nomb_prov'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 		 'razon_social'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 		 'sector_comercial'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
-		 'colonia'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú,0-9]+$/',
+		 //'colonia'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú,0-9]+$/',
 		 'calle'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 		 'numero_ext'=>'required|numeric',
 		 'telefono'=>'required|regex:/^[0-9]{10}$/',
@@ -97,7 +97,7 @@ class proveedorcontroller extends Controller
 			$provee->archivo = $img2;
 			$provee->activo=$request->activo;
 			$provee->save();
-		$proceso = "ALTA DE PROVEEDOR";	
+		$proceso = "ALTA PROVEEDOR";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
@@ -114,52 +114,66 @@ class proveedorcontroller extends Controller
 	public function eliminap($id_prov)
 	{
 		    proveedores::find($id_prov)->delete();
-		    $proceso = "ELIMINAR CLIENTE";
-			$mensaje = "El CLIENTE ha sido borrado Correctamente";
+		    $proceso = "ELIMINAR PROVEEDOR";
+			$mensaje = "El proveedor ha sido borrado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
 	}
-	public function modificam($idm)
+	public function modificaproveedor($id_prov)
 	{
-		$maestro = maestros::where('idm','=',$idm)->get();
+		$proveedor = proveedores::where('id_prov','=',$id_prov)->get();
 		
-		$idc = $maestro[0]->idc;
+		$id_est = $proveedor[0]->id_est;
+		$id_municipio = $proveedor[0]->id_municipio;
 		
-		$carrera=carreras::where('idc','=',$idc)->get();
-		$demascarreras=carreras::where('idc','!=',$idc)->get();
+		$estado=estados::where('id_est','=',$id_est)->get();
+		$demasestados=estados::where('id_est','!=',$id_est)->get();
 		
-		$carrera = carreras::where('idc','=',$idc)->get();
-		return view('sistema.guardamaestro')
-								  ->with('maestro',$maestro[0])
-								  ->with('idc',$idc)
-								  ->with('carrera',$carrera[0]->nombre)
-								  ->with('demascarreras',$demascarreras);
+		$municipio=municipios::where('id_municipio','=',$id_municipio)->get();
+		$demasmunicipios=municipios::where('id_municipio','!=',$id_municipio)->get();
+		
+		return view('sistema.guardaproveedor')
+								  ->with('proveedor',$proveedor[0])
+								  ->with('id_est',$id_est)
+								  ->with('id_municipio',$id_municipio)
+								  ->with('estado',$estado[0]->Nombre_est)
+								  ->with('demasestados',$demasestados)
+								  ->with('municipio',$municipio[0]->nomb_municipio)
+								  ->with('demasmunicipios',$demasmunicipios);
 	}
 	
 	
 	
-	public function editamaestro(Request $request)
+	public function editaproveedor(Request $request)
 	{
-		$nombre = $request->nombre;
-		$idm = $request->idm;
-		$edad= $request->edad;
-		$sexo = $request->sexo;
-		$beca= $request->beca;
-		$cp = $request->cp;
+		$nomb_prov = $request->nomb_prov;
+		$id_prov = $request->id_prov;
+		$razon_social= $request->razon_social;
+		$sector_comercial = $request->sector_comercial;
+		$colonia= $request->colonia;
+		$calle= $request->calle;
+		$numero_ext= $request->numero_ext;
+		$telefono = $request->telefono;
+		$email = $request->email;
+		$activo = $request->activo;
 		///NUNCA SE RECIBEN LOS ARCHIVOS
 		
 		
 		$this->validate($request,[
-		 'nombre'=>'required',['regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/'],
-		 'edad'=>'required|integer|min:18|max:60',
-		 'cp'=>'required',['regex:/^[0-9]{5}$/'],
-		 'beca'=>'required',['regex:/^[0-9]+[.][0-9]{2}$/'],
+	     'id_prov'=>'required|numeric',
+		 'nomb_prov'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'razon_social'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'sector_comercial'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 //'colonia'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú,0-9]+$/',
+		 'calle'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'numero_ext'=>'required|numeric',
+		 'telefono'=>'required|regex:/^[0-9]{10}$/',
+		 'email'=>'required|email',
 		 'archivo'=>'image|mimes:jpg,jpeg,png,gif'
 	     ]);
-		 
-		 
-		 $file = $request->file('archivo');
+
+     $file = $request->file('archivo');
 	 if($file!="")
 	 {
 	 $ldate = date('Ymd_His_');
@@ -167,27 +181,35 @@ class proveedorcontroller extends Controller
 	 $img2 = $ldate.$img;
 	 \Storage::disk('local')->put($img2, \File::get($file));
 	 }
-	 
+	 else
+	 {
+      $img2= 'sinfoto.png';
+	 }
 		 
 		 
 		 //insert into maestros(idm,nombre,edad,sexo) values('$idm',
 		 //'$nombre')
-		    $maest = maestros::find($idm);
-			$maest->idm = $request->idm;
-			$maest->nombre = $request->nombre;
-			$maest->edad =$request->edad;
-			$maest->sexo= $request->sexo;
-			$maest->cp=$request->cp;
-			$maest->beca=$request->beca;
-			$maest->idc=$request->idc;
+		    $provee = proveedores::find($id_prov);
+			$provee->id_prov = $request->id_prov;
+			$provee->nomb_prov = $request->nomb_prov;
+			$provee->razon_social = $request->razon_social;
+			$provee->sector_comercial = $request->sector_comercial;
+			$provee->colonia =$request->colonia;
+			$provee->calle= $request->calle;
+			$provee->numero_ext=$request->numero_ext;
+			$provee->telefono=$request->telefono;
+			$provee->email=$request->email;
+			$provee->id_est=$request->id_est;
+			$provee->id_municipio=$request->id_municipio;
 			if($file!='')
 			{
-			$maest->archivo = $img2;
+			$provee->archivo = $img2;
 			}
-			$maest->save();
-		$proceso = "ALTA DE MAESTRO";	
+			$provee->activo=$request->activo;
+			$provee->save();
+		$proceso = "PROVEEDOR MODIFICADO";	
 	    $mensaje="Registro modificado correctamente";
-		return view('sistema.mensaje')
+		return view("sistema.mensaje")
 		->with('proceso',$proceso)
 		->with('mensaje',$mensaje);
 		 
