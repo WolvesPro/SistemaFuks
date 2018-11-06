@@ -72,74 +72,49 @@ class alertascontroller extends Controller
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
 	}
-	public function modificam($idm)
+	public function modificaale($id_alerta)
 	{
-		$maestro = maestros::where('idm','=',$idm)->get();
+		$alerta = alertas::where('id_alerta','=',$id_alerta)->get();
+		$ida = $alerta[0]->ida;
+		//$idc = $maestro[0]->idc;
 		
-		$idc = $maestro[0]->idc;
+		//$carrera=carreras::where('idc','=',$idc)->get();
+		//$demascarreras=carreras::where('idc','!=',$idc)->get();
 		
-		$carrera=carreras::where('idc','=',$idc)->get();
-		$demascarreras=carreras::where('idc','!=',$idc)->get();
-		
-		$carrera = carreras::where('idc','=',$idc)->get();
-		return view('sistema.guardamaestro')
-								  ->with('maestro',$maestro[0])
-								  ->with('idc',$idc)
-								  ->with('carrera',$carrera[0]->nombre)
-								  ->with('demascarreras',$demascarreras);
+		//$carrera = carreras::where('idc','=',$idc)->get();
+		return view('sistema.guardaalerta')
+								  ->with('alerta',$alerta[0])
+								  ->with('ida',$ida);
 	}
 	
 	
 	
-	public function editamaestro(Request $request)
+	public function editaale(Request $request)
 	{
-		$nombre = $request->nombre;
-		$idm = $request->idm;
-		$edad= $request->edad;
-		$sexo = $request->sexo;
-		$beca= $request->beca;
-		$cp = $request->cp;
+		$nombre_alerta = $request->nombre_alerta;
+		$id_alerta = $request->id_alerta;
+		$tipo = $request->tipo;
+		$activo = $request->activo;
 		///NUNCA SE RECIBEN LOS ARCHIVOS
 		
 		
 		$this->validate($request,[
-		 'nombre'=>'required',['regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/'],
-		 'edad'=>'required|integer|min:18|max:60',
-		 'cp'=>'required',['regex:/^[0-9]{5}$/'],
-		 'beca'=>'required',['regex:/^[0-9]+[.][0-9]{2}$/'],
-		 'archivo'=>'image|mimes:jpg,jpeg,png,gif'
+	     'id_alerta'=>'required|numeric',
+		 'nombre_alerta'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'tipo'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 	     ]);
-		 
-		 
-		 $file = $request->file('archivo');
-	 if($file!="")
-	 {
-	 $ldate = date('Ymd_His_');
-	 $img = $file->getClientOriginalName();
-	 $img2 = $ldate.$img;
-	 \Storage::disk('local')->put($img2, \File::get($file));
-	 }
 	 
-		 
-		 
 		 //insert into maestros(idm,nombre,edad,sexo) values('$idm',
 		 //'$nombre')
-		    $maest = maestros::find($idm);
-			$maest->idm = $request->idm;
-			$maest->nombre = $request->nombre;
-			$maest->edad =$request->edad;
-			$maest->sexo= $request->sexo;
-			$maest->cp=$request->cp;
-			$maest->beca=$request->beca;
-			$maest->idc=$request->idc;
-			if($file!='')
-			{
-			$maest->archivo = $img2;
-			}
-			$maest->save();
-		$proceso = "ALTA DE MAESTRO";	
+		    $aler = alertas::find($id_alerta);
+			$aler->id_alerta = $request->id_alerta;
+			$aler->nombre_alerta = $request->nombre_alerta;
+			$aler->tipo = $request->tipo;
+			$aler->activo =$request->activo;
+			$aler->save();
+		$proceso = "ALERTA MODIFICADA";	
 	    $mensaje="Registro modificado correctamente";
-		return view('sistema.mensaje')
+		return view("sistema.mensaje")
 		->with('proceso',$proceso)
 		->with('mensaje',$mensaje);
 		 
@@ -148,7 +123,7 @@ class alertascontroller extends Controller
 	public function restauraa($id_alerta)
 	{
 		alertas::withTrashed()->where('id_alerta',$id_alerta)->restore();
-		$proceso = "RESTAURACION DE ALERTA";	
+		$proceso = "RESTAURACION DE ALERTA CORRECTO";	
 	    $mensaje="Registro restaurado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
