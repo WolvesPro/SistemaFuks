@@ -54,7 +54,7 @@ class clientescontroller extends Controller
 		$this->validate($request,[
 	     'id_cliente'=>'required|numeric',
 		 'nomb_cliente'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
-		 'colonia'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 //'colonia'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 		 'calle'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 		 'numero_ext'=>'required|numeric',
 		 'telefono'=>'required|regex:/^[0-9]{10}$/',
@@ -109,51 +109,62 @@ class clientescontroller extends Controller
 	{
 		    clientes::find($id_cliente)->delete();
 		    $proceso = "ELIMINAR CLIENTE";
-			$mensaje = "El CLIENTE ha sido eliminado Correctamente";
+			$mensaje = "El cliente ha sido eliminado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
 	}
-	public function modificam($idm)
+	public function modificacliente($id_cliente)
 	{
-		$maestro = maestros::where('idm','=',$idm)->get();
+		$cliente = clientes::where('id_cliente','=',$id_cliente)->get();
 		
-		$idc = $maestro[0]->idc;
+		$id_est = $cliente[0]->id_est;
+		$id_municipio = $cliente[0]->id_municipio;
 		
-		$carrera=carreras::where('idc','=',$idc)->get();
-		$demascarreras=carreras::where('idc','!=',$idc)->get();
 		
-		$carrera = carreras::where('idc','=',$idc)->get();
-		return view('sistema.guardamaestro')
-								  ->with('maestro',$maestro[0])
-								  ->with('idc',$idc)
-								  ->with('carrera',$carrera[0]->nombre)
-								  ->with('demascarreras',$demascarreras);
+		$estado=estados::where('id_est','=',$id_est)->get();
+		$demasestados=estados::where('id_est','!=',$id_est)->get();
+		
+		$municipio=municipios::where('id_municipio','=',$id_municipio)->get();
+		$demasmunicipios=municipios::where('id_municipio','!=',$id_municipio)->get();
+		
+		return view('sistema.guardacliente')
+								  ->with('cliente',$cliente[0])
+								  ->with('id_est',$id_est)
+								  ->with('id_municipio',$id_municipio)
+								  ->with('estado',$estado[0]->Nombre_est)
+								  ->with('demasestados',$demasestados)
+								  ->with('municipio',$municipio[0]->nomb_municipio)
+								  ->with('demasmunicipios',$demasmunicipios);
 	}
 	
 	
 	
-	public function editamaestro(Request $request)
+	public function editacliente(Request $request)
 	{
-		$nombre = $request->nombre;
-		$idm = $request->idm;
-		$edad= $request->edad;
-		$sexo = $request->sexo;
-		$beca= $request->beca;
-		$cp = $request->cp;
+		$nomb_cliente = $request->nomb_cliente;
+		$id_cliente = $request->id_cliente;
+		$colonia= $request->colonia;
+		$calle = $request->calle;
+		$numero_ext= $request->numero_ext;
+		$telefono = $request->telefono;
+		$email = $request->email;
+		$activo = $request->activo;
 		///NUNCA SE RECIBEN LOS ARCHIVOS
 		
 		
 		$this->validate($request,[
-		 'nombre'=>'required',['regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/'],
-		 'edad'=>'required|integer|min:18|max:60',
-		 'cp'=>'required',['regex:/^[0-9]{5}$/'],
-		 'beca'=>'required',['regex:/^[0-9]+[.][0-9]{2}$/'],
+	     'id_cliente'=>'required|numeric',
+		 'nomb_cliente'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 //'colonia'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'calle'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'numero_ext'=>'required|numeric',
+		 'telefono'=>'required|regex:/^[0-9]{10}$/',
+		 'email'=>'required|email',
 		 'archivo'=>'image|mimes:jpg,jpeg,png,gif'
 	     ]);
-		 
-		 
-		 $file = $request->file('archivo');
+
+     $file = $request->file('archivo');
 	 if($file!="")
 	 {
 	 $ldate = date('Ymd_His_');
@@ -161,27 +172,33 @@ class clientescontroller extends Controller
 	 $img2 = $ldate.$img;
 	 \Storage::disk('local')->put($img2, \File::get($file));
 	 }
-	 
+	 else
+	 {
+      $img2= 'sinfoto.png';
+	 }
 		 
 		 
 		 //insert into maestros(idm,nombre,edad,sexo) values('$idm',
 		 //'$nombre')
-		    $maest = maestros::find($idm);
-			$maest->idm = $request->idm;
-			$maest->nombre = $request->nombre;
-			$maest->edad =$request->edad;
-			$maest->sexo= $request->sexo;
-			$maest->cp=$request->cp;
-			$maest->beca=$request->beca;
-			$maest->idc=$request->idc;
+		    $client = clientes::find($id_cliente);
+			$client->id_cliente = $request->id_cliente;
+			$client->nomb_cliente = $request->nomb_cliente;
+			$client->colonia =$request->colonia;
+			$client->calle= $request->calle;
+			$client->numero_ext=$request->numero_ext;
+			$client->telefono=$request->telefono;
+			$client->email=$request->email;
+			$client->id_est=$request->id_est;
+			$client->id_municipio=$request->id_municipio;
 			if($file!='')
 			{
-			$maest->archivo = $img2;
+			$client->archivo = $img2;
 			}
-			$maest->save();
-		$proceso = "ALTA DE MAESTRO";	
+			$client->activo=$request->activo;
+			$client->save();
+		$proceso = "CLIENTE MODIFICADO";	
 	    $mensaje="Registro modificado correctamente";
-		return view('sistema.mensaje')
+		return view("sistema.mensaje")
 		->with('proceso',$proceso)
 		->with('mensaje',$mensaje);
 		 
