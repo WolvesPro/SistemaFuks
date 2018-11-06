@@ -89,79 +89,72 @@ class productoscontroller extends Controller
 	{
 		    productos::find($id_prod)->delete();
 		    $proceso = "ELIMINAR PRODUCTO";
-			$mensaje = "El PRODUCTO ha sido borrado Correctamente";
+			$mensaje = "El producto ha sido borrado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
 	}
-	public function modificam($idm)
+	public function modificaproducto($id_prod)
 	{
-		$maestro = maestros::where('idm','=',$idm)->get();
+		$producto = productos::where('id_prod','=',$id_prod)->get();
 		
-		$idc = $maestro[0]->idc;
+		$id_prov = $producto[0]->id_prov;
+		$id_cliente = $producto[0]->id_cliente;
 		
-		$carrera=carreras::where('idc','=',$idc)->get();
-		$demascarreras=carreras::where('idc','!=',$idc)->get();
+		$proveedor=proveedores::where('id_prov','=',$id_prov)->get();
+		$demasprovedores=proveedores::where('id_prov','!=',$id_prov)->get();
 		
-		$carrera = carreras::where('idc','=',$idc)->get();
-		return view('sistema.guardamaestro')
-								  ->with('maestro',$maestro[0])
-								  ->with('idc',$idc)
-								  ->with('carrera',$carrera[0]->nombre)
-								  ->with('demascarreras',$demascarreras);
+		$cliente=clientes::where('id_cliente','=',$id_cliente)->get();
+		$demasclientes=clientes::where('id_cliente','!=',$id_cliente)->get();
+		
+		return view('sistema.guardaproducto')
+								  ->with('producto',$producto[0])
+								  ->with('id_prov',$id_prov)
+								  ->with('id_cliente',$id_cliente)
+								  ->with('proveedor',$proveedor[0]->nomb_prov)
+								  ->with('demasprovedores',$demasprovedores)
+								  ->with('cliente',$cliente[0]->nomb_cliente)
+								  ->with('demasclientes',$demasclientes);
 	}
 	
 	
 	
-	public function editamaestro(Request $request)
+	public function editaproducto(Request $request)
 	{
-		$nombre = $request->nombre;
-		$idm = $request->idm;
-		$edad= $request->edad;
-		$sexo = $request->sexo;
-		$beca= $request->beca;
-		$cp = $request->cp;
+		$nomb_prod = $request->nomb_prod;
+		$id_prod = $request->id_prod;
+		$precio= $request->precio;
+		$existencia = $request->existencia;
+		$descripcion = $request->descripcion;
+		$activo = $request->activo;
 		///NUNCA SE RECIBEN LOS ARCHIVOS
 		
 		
 		$this->validate($request,[
-		 'nombre'=>'required',['regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/'],
-		 'edad'=>'required|integer|min:18|max:60',
-		 'cp'=>'required',['regex:/^[0-9]{5}$/'],
-		 'beca'=>'required',['regex:/^[0-9]+[.][0-9]{2}$/'],
-		 'archivo'=>'image|mimes:jpg,jpeg,png,gif'
+	     'id_prod'=>'required|numeric',
+		 'nomb_prod'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'precio'=>'required|regex:/^[0-9]+[.][0-9]{2}$/',
+		 'existencia'=>'required|numeric',
+		 'descripcion'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 	     ]);
-		 
-		 
-		 $file = $request->file('archivo');
-	 if($file!="")
-	 {
-	 $ldate = date('Ymd_His_');
-	 $img = $file->getClientOriginalName();
-	 $img2 = $ldate.$img;
-	 \Storage::disk('local')->put($img2, \File::get($file));
-	 }
-	 
+
 		 
 		 
 		 //insert into maestros(idm,nombre,edad,sexo) values('$idm',
 		 //'$nombre')
-		    $maest = maestros::find($idm);
-			$maest->idm = $request->idm;
-			$maest->nombre = $request->nombre;
-			$maest->edad =$request->edad;
-			$maest->sexo= $request->sexo;
-			$maest->cp=$request->cp;
-			$maest->beca=$request->beca;
-			$maest->idc=$request->idc;
-			if($file!='')
-			{
-			$maest->archivo = $img2;
-			}
-			$maest->save();
-		$proceso = "ALTA DE MAESTRO";	
+		    $produc = productos::find($id_prod);
+			$produc->id_prod = $request->id_prod;
+			$produc->nomb_prod = $request->nomb_prod;
+			$produc->precio = $request->precio;
+			$produc->existencia = $request->existencia;
+			$produc->descripcion = $request->descripcion;
+			$produc->id_prov = $request->id_prov;
+			$produc->id_cliente = $request->id_cliente;
+			$produc->activo = $request->activo;
+			$produc->save();
+		$proceso = "MODIFICA PRODUCTO";	
 	    $mensaje="Registro modificado correctamente";
-		return view('sistema.mensaje')
+		return view("sistema.mensaje")
 		->with('proceso',$proceso)
 		->with('mensaje',$mensaje);
 		 
