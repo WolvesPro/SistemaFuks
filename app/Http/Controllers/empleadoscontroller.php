@@ -64,7 +64,7 @@ class empleadoscontroller extends Controller
 		 'nomb_emp'=>'required|regex:/^[A-Z][A-Z,,a-z, ,ñ,á,é,í,ó,ú]+$/',
 		 'ape_paterno'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 		 'ape_materno'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
-		 'colonia'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 //'colonia'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 		 'calle'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú,0-9]+$/',
 		 'numero_ext'=>'required|numeric',
 		 'email'=>'required|email',
@@ -91,7 +91,7 @@ class empleadoscontroller extends Controller
 		    $emplea = new empleados;
 			$emplea->id_emp = $request->id_emp;
 			$emplea->nomb_emp = $request->nomb_emp;
-			$emplea->ape_paterno =$request->ape_materno;
+			$emplea->ape_paterno =$request->ape_paterno;
 			$emplea->ape_materno= $request->ape_materno;
 			$emplea->colonia= $request->colonia;
 			$emplea->calle= $request->calle;
@@ -103,7 +103,7 @@ class empleadoscontroller extends Controller
 			$emplea->id_area=$request->id_area;
 			$emplea->archivo = $img2;
 			$emplea->save();
-		$proceso = "ALTA DE EMPLEADO";	
+		$proceso = "ALTA EMPLEADO";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
@@ -121,51 +121,73 @@ class empleadoscontroller extends Controller
 	{
 		    empleados::find($id_emp)->delete();
 		    $proceso = "ELIMINAR EMPLEADO";
-			$mensaje = "El EMPLEADO ha sido eliminado Correctamente";
+			$mensaje = "El empleado ha sido eliminado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
 	}
-	public function modificam($idm)
+	public function modificaempleado($id_emp)
 	{
-		$maestro = maestros::where('idm','=',$idm)->get();
+		$empleado = empleados::where('id_emp','=',$id_emp)->get();
 		
-		$idc = $maestro[0]->idc;
+		$id_est = $empleado[0]->id_est;
+		$id_municipio = $empleado[0]->id_municipio;
+		$id_area = $empleado[0]->id_area;
 		
-		$carrera=carreras::where('idc','=',$idc)->get();
-		$demascarreras=carreras::where('idc','!=',$idc)->get();
 		
-		$carrera = carreras::where('idc','=',$idc)->get();
-		return view('sistema.guardamaestro')
-								  ->with('maestro',$maestro[0])
-								  ->with('idc',$idc)
-								  ->with('carrera',$carrera[0]->nombre)
-								  ->with('demascarreras',$demascarreras);
+		$estado=estados::where('id_est','=',$id_est)->get();
+		$demasestados=estados::where('id_est','!=',$id_est)->get();
+		
+		$municipio=municipios::where('id_municipio','=',$id_municipio)->get();
+		$demasmunicipios=municipios::where('id_municipio','!=',$id_municipio)->get();
+		
+		$area=areas::where('id_area','=',$id_area)->get();
+		$demasareas=areas::where('id_area','!=',$id_area)->get();
+		
+		return view('sistema.guardaempleado')
+								  ->with('empleado',$empleado[0])
+								  ->with('id_est',$id_est)
+								  ->with('id_municipio',$id_municipio)
+								  ->with('id_area',$id_area)
+								  ->with('estado',$estado[0]->Nombre_est)
+								  ->with('demasestados',$demasestados)
+								  ->with('municipio',$municipio[0]->nomb_municipio)
+								  ->with('demasmunicipios',$demasmunicipios)
+								  ->with('area',$area[0]->nomb_area)
+								  ->with('demasareas',$demasareas);
 	}
 	
 	
 	
-	public function editamaestro(Request $request)
+	public function editaempleado(Request $request)
 	{
-		$nombre = $request->nombre;
-		$idm = $request->idm;
-		$edad= $request->edad;
-		$sexo = $request->sexo;
-		$beca= $request->beca;
-		$cp = $request->cp;
+		$nomb_emp = $request->nomb_emp;
+		$id_emp = $request->id_emp;
+		$ape_paterno= $request->ape_paterno;
+		$ape_materno = $request->ape_materno;
+		$colonia= $request->colonia;
+		$calle = $request->calle;
+		$numero_ext = $request->numero_ext;
+		$email = $request->email;
+		$puesto = $request->puesto;
+		
 		///NUNCA SE RECIBEN LOS ARCHIVOS
 		
 		
 		$this->validate($request,[
-		 'nombre'=>'required',['regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/'],
-		 'edad'=>'required|integer|min:18|max:60',
-		 'cp'=>'required',['regex:/^[0-9]{5}$/'],
-		 'beca'=>'required',['regex:/^[0-9]+[.][0-9]{2}$/'],
+	     'id_emp'=>'required|numeric',
+		 'nomb_emp'=>'required|regex:/^[A-Z][A-Z,,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'ape_paterno'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'ape_materno'=>'required|regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 //'colonia'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'calle'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú,0-9]+$/',
+		 'numero_ext'=>'required|numeric',
+		 'email'=>'required|email',
+		 'puesto'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 		 'archivo'=>'image|mimes:jpg,jpeg,png,gif'
 	     ]);
-		 
-		 
-		 $file = $request->file('archivo');
+
+     $file = $request->file('archivo');
 	 if($file!="")
 	 {
 	 $ldate = date('Ymd_His_');
@@ -173,27 +195,35 @@ class empleadoscontroller extends Controller
 	 $img2 = $ldate.$img;
 	 \Storage::disk('local')->put($img2, \File::get($file));
 	 }
-	 
+	 else
+	 {
+      $img2= 'sinfoto.png';
+	 }
 		 
 		 
 		 //insert into maestros(idm,nombre,edad,sexo) values('$idm',
 		 //'$nombre')
-		    $maest = maestros::find($idm);
-			$maest->idm = $request->idm;
-			$maest->nombre = $request->nombre;
-			$maest->edad =$request->edad;
-			$maest->sexo= $request->sexo;
-			$maest->cp=$request->cp;
-			$maest->beca=$request->beca;
-			$maest->idc=$request->idc;
+		    $emplea = empleados::find($id_emp);
+			$emplea->id_emp = $request->id_emp;
+			$emplea->nomb_emp = $request->nomb_emp;
+			$emplea->ape_paterno =$request->ape_paterno;
+			$emplea->ape_materno= $request->ape_materno;
+			$emplea->colonia= $request->colonia;
+			$emplea->calle= $request->calle;
+			$emplea->numero_ext=$request->numero_ext;
+			$emplea->email=$request->email;
+			$emplea->puesto=$request->puesto;
+			$emplea->id_est=$request->id_est;
+			$emplea->id_municipio=$request->id_municipio;
+			$emplea->id_area=$request->id_area;
 			if($file!='')
 			{
-			$maest->archivo = $img2;
+			$emplea->archivo = $img2;
 			}
-			$maest->save();
-		$proceso = "ALTA DE MAESTRO";	
+			$emplea->save();
+		$proceso = "MODIFICAR EMPLEADO";	
 	    $mensaje="Registro modificado correctamente";
-		return view('sistema.mensaje')
+		return view("sistema.mensaje")
 		->with('proceso',$proceso)
 		->with('mensaje',$mensaje);
 		 
