@@ -35,7 +35,10 @@
 									@if($cli->deleted_at =="")
 									<a class="btn btn-danger btn-md" href="{{URL::action('clientescontroller@eliminac',['id_cliente'=>$cli->id_cliente])}}"> 
 										Eliminar  
-									</a>				         
+									</a>
+									<a  class="btn btn-danger btn-md" href="{{URL::action('clientescontroller@modificacliente',['id_cliente'=>$cli->id_cliente])}}"> 
+									Modificar 
+								    </a>
 										@else						
 									<a class="btn btn-primary btn-md" href="{{URL::action('clientescontroller@restaurac',['id_cliente'=>$cli->id_cliente])}}"> 
 										Restaurar  
