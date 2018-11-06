@@ -78,80 +78,65 @@ class almacencontroller extends Controller
 	public function eliminaal($id_almacen)
 	{
 		    almacenes::find($id_almacen)->delete();
-		    $proceso = "ELIMINAR ALMACEN";
-			$mensaje = "El Almacen ha sido borrado Correctamente";
+		    $proceso = "ALMACEN ELIMINADO";
+			$mensaje = "El almacen ha sido borrado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
 	}
-	public function modificam($idm)
+	public function modificaalma($id_almacen)
 	{
-		$maestro = maestros::where('idm','=',$idm)->get();
+		$almacen = almacenes::where('id_almacen','=',$id_almacen)->get();
 		
-		$idc = $maestro[0]->idc;
+		$id_prod = $almacen[0]->id_prod;
 		
-		$carrera=carreras::where('idc','=',$idc)->get();
-		$demascarreras=carreras::where('idc','!=',$idc)->get();
+		$id_area = $almacen[0]->id_area;
 		
-		$carrera = carreras::where('idc','=',$idc)->get();
-		return view('sistema.guardamaestro')
-								  ->with('maestro',$maestro[0])
-								  ->with('idc',$idc)
-								  ->with('carrera',$carrera[0]->nombre)
-								  ->with('demascarreras',$demascarreras);
+		$producto=productos::where('id_prod','=',$id_prod)->get();
+		$demasproductos=productos::where('id_prod','!=',$id_prod)->get();
+		
+		$area=areas::where('id_area','=',$id_area)->get();
+		$demasareas=areas::where('id_area','!=',$id_area)->get();
+		
+		
+		return view('sistema.guardaalmacen')
+								  ->with('almacen',$almacen[0])
+								  ->with('id_prod',$id_prod)
+								  ->with('id_area',$id_area)
+								  ->with('producto',$producto[0]->nomb_prod)
+								  ->with('demasproductos',$demasproductos)
+								  ->with('area',$area[0]->nomb_area)
+								  ->with('demasareas',$demasareas);
 	}
 	
 	
 	
-	public function editamaestro(Request $request)
+	public function editaalma(Request $request)
 	{
-		$nombre = $request->nombre;
-		$idm = $request->idm;
-		$edad= $request->edad;
-		$sexo = $request->sexo;
-		$beca= $request->beca;
-		$cp = $request->cp;
+		$nomb_almacen = $request->nomb_almacen;
+		$id_almacen = $request->id_almacen;
+		
 		///NUNCA SE RECIBEN LOS ARCHIVOS
 		
 		
 		$this->validate($request,[
-		 'nombre'=>'required',['regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/'],
-		 'edad'=>'required|integer|min:18|max:60',
-		 'cp'=>'required',['regex:/^[0-9]{5}$/'],
-		 'beca'=>'required',['regex:/^[0-9]+[.][0-9]{2}$/'],
-		 'archivo'=>'image|mimes:jpg,jpeg,png,gif'
+	     'id_almacen'=>'required|numeric',
+		 'nomb_almacen'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 	     ]);
-		 
-		 
-		 $file = $request->file('archivo');
-	 if($file!="")
-	 {
-	 $ldate = date('Ymd_His_');
-	 $img = $file->getClientOriginalName();
-	 $img2 = $ldate.$img;
-	 \Storage::disk('local')->put($img2, \File::get($file));
-	 }
-	 
+
 		 
 		 
 		 //insert into maestros(idm,nombre,edad,sexo) values('$idm',
 		 //'$nombre')
-		    $maest = maestros::find($idm);
-			$maest->idm = $request->idm;
-			$maest->nombre = $request->nombre;
-			$maest->edad =$request->edad;
-			$maest->sexo= $request->sexo;
-			$maest->cp=$request->cp;
-			$maest->beca=$request->beca;
-			$maest->idc=$request->idc;
-			if($file!='')
-			{
-			$maest->archivo = $img2;
-			}
-			$maest->save();
-		$proceso = "ALTA DE MAESTRO";	
+		     $alma = almacenes::find($id_almacen);
+			 $alma->id_almacen = $request->id_almacen;
+			 $alma->nomb_almacen = $request->nomb_almacen;
+			 $alma->id_prod = $request->id_prod;
+			 $alma->id_area = $request->id_area;
+			 $alma->save();
+		$proceso = "ALMACEN MODIFICADO";	
 	    $mensaje="Registro modificado correctamente";
-		return view('sistema.mensaje')
+		return view("sistema.mensaje")
 		->with('proceso',$proceso)
 		->with('mensaje',$mensaje);
 		 
