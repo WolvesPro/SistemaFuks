@@ -58,7 +58,7 @@ class areascontroller extends Controller
 			$are->id_ma = $request->id_ma;
 		    $are->activo = $request->activo;
 			$are->save();
-		$proceso = "ALTA DE AREA";	
+		$proceso = "ALTA AREAS";	
 	    $mensaje="Registro guardado correctamente";
 		return view("sistema.mensaje")
 		->with('proceso',$proceso)
@@ -75,80 +75,59 @@ class areascontroller extends Controller
 	public function eliminaar($id_area)
 	{
 		    areas::find($id_area)->delete();
-		    $proceso = "ELIMINAR AREA";
-			$mensaje = "El AREA ha sido borrada Correctamente";
+		    $proceso = "ELIMINA AREA";
+			$mensaje = "El area ha sido borrado Correctamente";
 			return view ("sistema.mensaje")
 			->with('proceso',$proceso)
 			->with('mensaje',$mensaje);
 	}
-	public function modificam($idm)
+	public function modificaarea($id_area)
 	{
-		$maestro = maestros::where('idm','=',$idm)->get();
+		$area = areas::where('id_area','=',$id_area)->get();
 		
-		$idc = $maestro[0]->idc;
+		$id_ma = $area[0]->id_ma;
 		
-		$carrera=carreras::where('idc','=',$idc)->get();
-		$demascarreras=carreras::where('idc','!=',$idc)->get();
+		$maquinaria=maquinarias::where('id_ma','=',$id_ma)->get();
+		$demasmaquinarias=maquinarias::where('id_ma','!=',$id_ma)->get();
 		
-		$carrera = carreras::where('idc','=',$idc)->get();
-		return view('sistema.guardamaestro')
-								  ->with('maestro',$maestro[0])
-								  ->with('idc',$idc)
-								  ->with('carrera',$carrera[0]->nombre)
-								  ->with('demascarreras',$demascarreras);
+		return view('sistema.guardaarea')
+								  ->with('area',$area[0])
+								  ->with('id_ma',$id_ma)
+								  ->with('maquinaria',$maquinaria[0]->nombre_ma)
+								  ->with('demasmaquinarias',$demasmaquinarias);
 	}
 	
 	
 	
-	public function editamaestro(Request $request)
+	public function editaarea(Request $request)
 	{
-		$nombre = $request->nombre;
-		$idm = $request->idm;
-		$edad= $request->edad;
-		$sexo = $request->sexo;
-		$beca= $request->beca;
-		$cp = $request->cp;
+		$nomb_area = $request->nomb_area;
+		$id_area = $request->id_area;
+		$ubicacion= $request->ubicacion;
+		$activo= $request->activo;
 		///NUNCA SE RECIBEN LOS ARCHIVOS
 		
 		
 		$this->validate($request,[
-		 'nombre'=>'required',['regex:/^[A-Z][A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/'],
-		 'edad'=>'required|integer|min:18|max:60',
-		 'cp'=>'required',['regex:/^[0-9]{5}$/'],
-		 'beca'=>'required',['regex:/^[0-9]+[.][0-9]{2}$/'],
-		 'archivo'=>'image|mimes:jpg,jpeg,png,gif'
+	     'id_area'=>'required|numeric',
+		 'nomb_area'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
+		 'ubicacion'=>'required|regex:/^[A-Z,a-z, ,ñ,á,é,í,ó,ú]+$/',
 	     ]);
-		 
-		 
-		 $file = $request->file('archivo');
-	 if($file!="")
-	 {
-	 $ldate = date('Ymd_His_');
-	 $img = $file->getClientOriginalName();
-	 $img2 = $ldate.$img;
-	 \Storage::disk('local')->put($img2, \File::get($file));
-	 }
-	 
+
 		 
 		 
 		 //insert into maestros(idm,nombre,edad,sexo) values('$idm',
 		 //'$nombre')
-		    $maest = maestros::find($idm);
-			$maest->idm = $request->idm;
-			$maest->nombre = $request->nombre;
-			$maest->edad =$request->edad;
-			$maest->sexo= $request->sexo;
-			$maest->cp=$request->cp;
-			$maest->beca=$request->beca;
-			$maest->idc=$request->idc;
-			if($file!='')
-			{
-			$maest->archivo = $img2;
-			}
-			$maest->save();
-		$proceso = "ALTA DE MAESTRO";	
+		    $are = areas::find($id_area);
+			$are->id_area = $request->id_area;
+			$are->nomb_area = $request->nomb_area;
+			$are->ubicacion = $request->ubicacion;
+			$are->id_ma = $request->id_ma;
+		    $are->activo = $request->activo;
+			$are->save();
+		$proceso = "AREA MODIFICADA";	
 	    $mensaje="Registro modificado correctamente";
-		return view('sistema.mensaje')
+		return view("sistema.mensaje")
 		->with('proceso',$proceso)
 		->with('mensaje',$mensaje);
 		 
